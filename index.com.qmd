@@ -1,0 +1,87 @@
+---
+title: "index.com"
+author: "Fernanda Chinchilla Navarro & Franchesca Moraga"
+format: html
+editor: visual
+---
+
+## Introducción
+
+# Para esta tarea se desarrollará un documento Quarto con bloques de codigo en R que utilicen funciones de Tidyverse para consultar el conjunto de datos heart_failure_clinical_records_dataset. Esto con el fin de representar en una tabla 13 características clínicas como la edad, sexo, anemia, diabetes, fumador, etc.
+
+Estos datos se recopilaron y forman parte de Chicco, D., Jurman, G. Machine learning can predict survival of patients with heart failure from serum creatinine and ejection fraction alone. BMC Med Inform Decis Mak 20, 16 (2020)
+
+## Carga de paquetes
+
+```{r}
+#| label: carga-paquetes
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+```
+
+## Carga de datos
+
+```{r}
+#| label: carga-datos
+#| message: false
+#| warning: false
+
+heart_failure_clinical_records_dataset <- read.csv("heart_failure_clinical_records_dataset.csv")
+
+```
+
+## Consultas
+
+## Consulta 1
+
+```{r}
+#| label: consulta_1
+
+heart_failure_clinical_records_dataset |>
+select(sex, age, diabetes, high_blood_pressure , serum_creatinine)|>
+  filter(sex=="1" & age>=75)|>
+  arrange(desc(age))|>
+  kable()
+
+```
+
+## Consulta 2
+
+```{r}
+#| label: consulta_2
+
+heart_failure_clinical_records_dataset|>
+  select(sex, age, diabetes, high_blood_pressure, ejection_fraction, smoking)|>
+  filter(sex== "0", diabetes == TRUE | smoking == TRUE)|>
+  arrange(age)|>
+  kable()
+
+```
+
+## Consulta 3
+
+```{r}
+#| label: consulta_3
+
+heart_failure_clinical_records_dataset|>
+  mutate(diabetes_status = ifelse(diabetes=="1", "Diabetico", "No Diabetico"))|>
+  group_by(diabetes)|>
+  summarize(promedio_fraccion_eyeccion = mean(ejection_fraction))|>
+  kable()
+
+```
+
+## Consulta 4
+
+```{r}
+#| label: consulta_4
+
+heart_failure_clinical_records_dataset|>
+  filter(sex=="1", DEATH_EVENT=="1")|>
+  summarize(menor_edad_fallecidos =min(age))|>
+  kable()
+```
